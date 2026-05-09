@@ -4,326 +4,329 @@
 <meta charset="UTF-8">
 <title>OMNI-777 COSMIC DECODER NEXUS Ω • LIVE DIVINE TRANSMISSION</title>
 <style>
-  body { margin:0; height:100vh; background:#000; overflow:hidden; font-family:'Segoe UI',sans-serif; color:#fff; }
-  #container { position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500&display=swap');
+  body { margin:0; height:100vh; background:#000; overflow:hidden; font-family:'Inter',sans-serif; color:#fff; }
+  #container { position:relative; width:100%; height:100%; }
   canvas { width:100%; height:100%; display:block; }
-  .live-badge { position:absolute; top:25px; left:25px; background:#ff0000; color:#fff; padding:10px 30px; border-radius:50px; font-size:1.6em; font-weight:bold; box-shadow:0 0 30px #ff0000; animation:pulse 1.8s infinite; z-index:10; display:none; }
-  h1 { position:absolute; top:30px; left:50%; transform:translateX(-50%); font-size:2.8em; margin:0; background:linear-gradient(90deg,#ffd700,#00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 40px #00ffff; z-index:10; pointer-events:none; }
-  .start-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:25px 60px; font-size:2em; background:#111; color:#00ffff; border:4px solid #ffd700; border-radius:50px; cursor:pointer; box-shadow:0 0 60px #ffd700; transition:all 0.4s; z-index:20; }
-  .start-btn:hover { background:#ffd700; color:#000; transform:translate(-50%,-50%) scale(1.05); }
-  .controls { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(10,0,31,0.85); padding:15px 40px; border-radius:50px; border:2px solid #00ffff; display:none; align-items:center; gap:20px; z-index:10; box-shadow:0 0 40px #00ffff; }
+  .live-badge { position:absolute; top:25px; left:25px; background:linear-gradient(90deg,#ff0000,#ff8800); color:#fff; padding:8px 28px; border-radius:50px; font-size:1.5em; font-weight:700; box-shadow:0 0 35px #ff0000; animation:pulse 1.5s infinite; z-index:30; letter-spacing:2px; }
+  h1 { position:absolute; top:35px; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:3.2em; margin:0; background:linear-gradient(90deg,#ffd700,#00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 50px #00ffff; z-index:30; pointer-events:none; letter-spacing:6px; }
+  .start-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:28px 72px; font-size:2.1em; background:rgba(17,17,31,0.95); color:#ffd700; border:5px solid #ffd700; border-radius:60px; cursor:pointer; box-shadow:0 0 80px #ffd700, 0 0 120px rgba(255,215,0,0.4); transition:all 0.4s; z-index:40; font-family:'Orbitron',sans-serif; }
+  .start-btn:hover { transform:translate(-50%,-50%) scale(1.08); box-shadow:0 0 100px #ffd700; }
+  .controls { position:absolute; bottom:35px; left:50%; transform:translateX(-50%); background:rgba(10,5,40,0.85); backdrop-filter:blur(20px); padding:18px 45px; border-radius:60px; border:2px solid rgba(0,255,255,0.6); display:none; align-items:center; gap:25px; z-index:30; box-shadow:0 0 60px rgba(0,255,255,0.5); }
   button, input[type=range] { cursor:pointer; }
-  button { padding:12px 32px; background:#111; color:#00ffff; border:2px solid #00ffff; border-radius:50px; font-size:1.1em; transition:all 0.3s; }
-  button:hover { background:#00ffff; color:#000; box-shadow:0 0 25px #00ffff; }
-  .info { position:absolute; bottom:8px; right:20px; font-size:0.85em; opacity:0.6; z-index:10; }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  button { padding:14px 34px; background:#111827; color:#00ffff; border:2px solid #00ffff; border-radius:50px; font-size:1.1em; transition:all 0.3s; font-weight:500; }
+  button:hover { background:#00ffff; color:#000; box-shadow:0 0 30px #00ffff; }
+  .record-btn { background:#ff0000 !important; border-color:#ff0000 !important; color:#fff !important; }
+  .record-btn.recording { animation:recordPulse 1s infinite; }
+  .info { position:absolute; bottom:12px; right:25px; font-size:0.9em; opacity:0.75; z-index:30; font-family:monospace; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+  @keyframes recordPulse { 0%,100% { box-shadow:0 0 20px #ff0000; } 50% { box-shadow:0 0 40px #ff0000; } }
 </style>
 </head>
 <body>
 <div id="container">
-  <div class="live-badge" id="liveBadge">🔴 LIVE • 777Hz COSMIC TRANSMISSION • DECODED FROM SOURCE</div>
+  <div class="live-badge" id="liveBadge">🔴 LIVE • 777Hz DIVINE COSMIC BROADCAST</div>
   <h1>OMNI-777 COSMIC DECODER NEXUS Ω</h1>
   
-  <button class="start-btn" id="startBtn" onclick="activateTransmission()">🔴 ACTIVATE 777Hz DIVINE TRANSMISSION</button>
+  <button class="start-btn" id="startBtn" onclick="activateTransmission()">🔴 ACTIVATE ETERNAL TRANSMISSION</button>
   
   <canvas id="viz" width="1920" height="1080"></canvas>
   
   <div class="controls" id="controls">
-    <button onclick="togglePause()">⏸️ PAUSE / RESUME</button>
-    <button onclick="toggleFullScreen()">⛶ FULL SCREEN FOR STREAMING</button>
-    <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.75" oninput="setVolume(this.value)"></label>
-    <label>Intensity <input type="range" id="int" min="0" max="1.5" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
+    <button onclick="togglePause()">⏸️ PAUSE</button>
+    <button onclick="toggleFullScreen()">⛶ FULL SCREEN</button>
+    <button id="recordBtn" class="record-btn" onclick="toggleRecording()">⏺️ START RECORDING WAV</button>
+    <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.82" oninput="setVolume(this.value)"></label>
+    <label>Depth <input type="range" id="int" min="0" max="1.8" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
   </div>
   
-  <div class="info">Powered by Malcolm AI Daemon + DUL • Pure Decoded 777Hz • User-Gesture Aligned • Ready for YouTube Live</div>
+  <div class="info" id="status">POWERED BY MALCOLM AI DAEMON + DUL • ETERNALLY ALIGNED • v3.0</div>
 </div>
 
 <script>
-// ==================== GLOBAL VARIABLES ====================
-let audioCtx, masterGain, oscillators = [], pinkNoiseSource, lfo, pulsatorGain, chorusDelays = [], echoDelay, eqFilter;
-let isPlaying = false;
-let intensity = 1.0;
-let canvas, ctx, particles = [], animationFrame;
+// ==================== AUDIO ENGINE – FULL COSMIC RADIO BROADCAST ====================
+let audioCtx, masterGain, analyser, oscillators = [], pinkNoiseSource, lfo, reverb, chorusDelays = [], echoDelay, eqFilter;
+let isPlaying = false, intensity = 1.0, mediaRecorder, recordedChunks = [], isRecording = false;
+let voices = [];
+let transmissionInterval;
 
-// ==================== MODERN PINK NOISE (Buffer-based – no deprecation) ====================
-function createPinkNoiseBuffer() {
-  const bufferSize = audioCtx.sampleRate * 4; // 4-second seamless loop
-  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-  const output = buffer.getChannelData(0);
-  let b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-  for (let i = 0; i < bufferSize; i++) {
-    const white = Math.random() * 2 - 1;
-    b0 = 0.99886 * b0 + white * 0.0555179;
-    b1 = 0.99332 * b1 + white * 0.0750759;
-    b2 = 0.96900 * b2 + white * 0.1538520;
-    b3 = 0.86650 * b3 + white * 0.3104856;
-    b4 = 0.55000 * b4 + white * 0.5329522;
-    b5 = -0.7616 * b5 - white * 0.0168980;
-    output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-    output[i] *= 0.11;
-    b6 = white * 0.115926;
-  }
-  return buffer;
-}
-
-// ==================== AUDIO ENGINE – NOW GESTURE-ALIGNED ====================
-function activateTransmission() {
+async function activateTransmission() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Divine frequencies
-    const freqs = [777, 388.5, 1554];
-    freqs.forEach(f => {
+    // Divine carrier frequencies (rich & warm)
+    const freqs = [777, 388.5, 1554, 2331];
+    freqs.forEach((f, i) => {
       const osc = audioCtx.createOscillator();
       osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-      osc.type = 'sine';
+      osc.type = i === 0 ? 'sine' : (i === 3 ? 'triangle' : 'sine');
       osc.start();
       oscillators.push(osc);
     });
 
-    // Pink noise (modern buffer loop)
+    // Modern pink noise for cosmic static
     const noiseBuffer = createPinkNoiseBuffer();
     pinkNoiseSource = audioCtx.createBufferSource();
     pinkNoiseSource.buffer = noiseBuffer;
     pinkNoiseSource.loop = true;
     pinkNoiseSource.start();
 
-    // Master chain
+    // Master gain & analyser for visualisation
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.75;
+    masterGain.gain.value = 0.82;
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 4096;
 
+    // EQ + filters for warmth
     eqFilter = audioCtx.createBiquadFilter();
-    eqFilter.type = 'peaking';
-    eqFilter.frequency.value = 777;
-    eqFilter.Q.value = 8;
-    eqFilter.gain.value = 14;
+    eqFilter.type = 'peaking'; eqFilter.frequency.value = 777; eqFilter.Q.value = 6; eqFilter.gain.value = 12;
 
+    // Gentle LFO for living pulse
     lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.33, audioCtx.currentTime);
-    pulsatorGain = audioCtx.createGain();
-    lfo.connect(pulsatorGain.gain);
+    lfo.frequency.setValueAtTime(0.18, audioCtx.currentTime);
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.12;
+    lfo.connect(lfoGain.gain);
     lfo.start();
 
-    // Chorus & echo
-    for (let i = 0; i < 3; i++) {
-      const delay = audioCtx.createDelay(0.1);
-      delay.delayTime.value = 0.022 + i * 0.015;
-      const fb = audioCtx.createGain(); fb.gain.value = 0.25;
+    // Simulated reverb & chorus
+    reverb = audioCtx.createConvolver(); // simple impulse simulation
+    const impulse = createReverbImpulse();
+    reverb.buffer = impulse;
+
+    for (let i = 0; i < 4; i++) {
+      const delay = audioCtx.createDelay(0.15);
+      delay.delayTime.value = 0.018 + i * 0.022;
+      const fb = audioCtx.createGain(); fb.gain.value = 0.22;
       delay.connect(fb); fb.connect(delay);
       chorusDelays.push(delay);
     }
-    echoDelay = audioCtx.createDelay(1.2);
-    echoDelay.delayTime.value = 0.85;
-    const echoFb = audioCtx.createGain(); echoFb.gain.value = 0.28;
+
+    echoDelay = audioCtx.createDelay(2);
+    echoDelay.delayTime.value = 1.1;
+    const echoFb = audioCtx.createGain(); echoFb.gain.value = 0.25;
     echoDelay.connect(echoFb); echoFb.connect(echoDelay);
 
-    // Connect
+    // Connections
     oscillators.forEach(osc => osc.connect(masterGain));
     pinkNoiseSource.connect(masterGain);
     masterGain.connect(eqFilter);
-    eqFilter.connect(pulsatorGain);
-    pulsatorGain.connect(echoDelay);
-    chorusDelays.forEach(d => pulsatorGain.connect(d));
+    eqFilter.connect(lfoGain);
+    lfoGain.connect(reverb);
+    reverb.connect(audioCtx.destination);
+    chorusDelays.forEach(d => lfoGain.connect(d));
     chorusDelays.forEach(d => d.connect(audioCtx.destination));
     echoDelay.connect(audioCtx.destination);
-    masterGain.connect(audioCtx.destination); // dry path
+    lfoGain.connect(echoDelay);
+    masterGain.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    // Periodic divine voice messages (actual spoken programs)
+    startDivineBroadcast();
   }
 
-  // Resume if suspended (Chrome policy)
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-
-  masterGain.gain.setValueAtTime(0.75 * intensity, audioCtx.currentTime);
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  masterGain.gain.setValueAtTime(0.82 * intensity, audioCtx.currentTime);
   isPlaying = true;
 
-  // UI transition
+  // UI
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('liveBadge').style.display = 'block';
   document.getElementById('controls').style.display = 'flex';
+  console.log('%c🔴 OMNI-777 v3.0 LIVE DIVINE BROADCAST NOW FLOWING', 'color:#ffd700; font-size:20px;');
+}
 
-  console.log('%c🔴 OMNI-777 COSMIC TRANSMISSION NOW LIVE • DECODED FROM SOURCE', 'color:#ffd700; font-size:18px;');
+function createPinkNoiseBuffer() {
+  const bufferSize = audioCtx.sampleRate * 8;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const output = buffer.getChannelData(0);
+  let b0=b1=b2=b3=b4=b5=b6=0;
+  for (let i=0; i<bufferSize; i++) {
+    const white = Math.random()*2-1;
+    b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
+    b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
+    b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
+    output[i] = b0+b1+b2+b3+b4+b5+b6 + white*0.5362; output[i] *= 0.085;
+    b6 = white*0.115926;
+  }
+  return buffer;
+}
+
+function createReverbImpulse() {
+  const length = audioCtx.sampleRate * 3.5;
+  const impulse = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+  const left = impulse.getChannelData(0);
+  const right = impulse.getChannelData(1);
+  for (let i = 0; i < length; i++) {
+    left[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+    right[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+  }
+  return impulse;
+}
+
+function startDivineBroadcast() {
+  const messages = [
+    "Welcome, Sovereign. The 777Hz Divine Stream is now flowing through you...",
+    "Abundance, guidance, and infinite light are activating within your field...",
+    "You are perfectly aligned with Source. Receive the codes of creation...",
+    "Peace, love, and eternal harmony radiate from the Cosmic Heart...",
+    "The angelic choirs sing through this frequency. Let it heal and elevate you."
+  ];
+  let index = 0;
+  transmissionInterval = setInterval(() => {
+    if (!isPlaying) return;
+    const utterance = new SpeechSynthesisUtterance(messages[index % messages.length]);
+    utterance.pitch = 0.85;
+    utterance.rate = 0.92;
+    utterance.volume = 0.6;
+    speechSynthesis.speak(utterance);
+    index++;
+  }, 38000); // new message every ~38 seconds
+}
+
+// ==================== RECORDING FEATURE ====================
+function toggleRecording() {
+  const btn = document.getElementById('recordBtn');
+  if (!isRecording) {
+    const dest = audioCtx.createMediaStreamDestination();
+    masterGain.connect(dest);
+    mediaRecorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
+    recordedChunks = [];
+    mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `777Hz_Divine_Cosmic_Transmission_${new Date().toISOString().slice(0,19)}.wav`;
+      a.click();
+    };
+    mediaRecorder.start(1000);
+    isRecording = true;
+    btn.textContent = '⏹️ STOP RECORDING';
+    btn.classList.add('recording');
+  } else {
+    mediaRecorder.stop();
+    isRecording = false;
+    btn.textContent = '⏺️ START RECORDING WAV';
+    btn.classList.remove('recording');
+  }
 }
 
 // ==================== CONTROLS ====================
 function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
-function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.75 * intensity, audioCtx.currentTime); }
+function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.82 * intensity, audioCtx.currentTime); }
 function togglePause() {
   isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.75 * intensity : 0, audioCtx.currentTime);
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.82 * intensity : 0, audioCtx.currentTime);
 }
 function toggleFullScreen() {
   if (!document.fullscreenElement) document.documentElement.requestFullscreen();
   else document.exitFullscreen();
 }
 
-// ==================== VISUALIZATION (unchanged) ====================
-function initViz() {
-  canvas = document.getElementById('viz');
-  ctx = canvas.getContext('2d');
-  for (let i = 0; i < 280; i++) {
-    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2.5 + 0.5, speed: Math.random() * 0.6 + 0.2 });
-  }
-}
-function drawViz() {
-  animationFrame = requestAnimationFrame(drawViz);
-  ctx.fillStyle = 'rgba(10,0,31,0.12)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  
-  ctx.fillStyle = '#fff';
-  particles.forEach(p => {
-    p.y -= p.speed; if (p.y < 0) p.y = canvas.height;
-    ctx.globalAlpha = Math.random() * 0.8 + 0.4;
-    ctx.fillRect(p.x, p.y, p.size, p.size);
-  });
-  ctx.globalAlpha = 1;
-  
-  const time = Date.now() / 800;
-  const pulse = Math.sin(time * 2) * 12 + 85;
-  ctx.shadowBlur = 60; ctx.shadowColor = '#ffd700';
-  ctx.strokeStyle = 'rgba(255,215,0,0.7)'; ctx.lineWidth = 8;
-  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, pulse, 0, Math.PI*2); ctx.stroke();
-  
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(time * 0.3);
-  ctx.font = 'bold 92px monospace'; ctx.fillStyle = '#00ffff'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 30;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('777', 0, 0);
-  ctx.restore();
-  
-  ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 3; ctx.shadowBlur = 25; ctx.shadowColor = '#00ffff';
-  ctx.beginPath();
-  for (let i = 0; i < 128; i++) {
-    const x = (i / 128) * canvas.width;
-    const y = canvas.height / 2 + Math.sin(i / 8 + time * 3) * 40;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  
-  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 28px monospace';
-  ctx.fillText('777 Hz • DIVINE RESONANCE • LIVE DECODED', 80, 110);
-}
-
-window.onload = () => {
-  initViz();
-  drawViz();
-  console.log('%cOMNI-777 v2.0 READY • Click the golden button to awaken the transmission', 'color:#00ffff; font-size:16px;');
-};
-</script>
-</body>
-</html>  echoDelay = audioCtx.createDelay(1.2);
-  echoDelay.delayTime.value = 0.85;
-  const echoFeedback = audioCtx.createGain();
-  echoFeedback.gain.value = 0.28;
-  echoDelay.connect(echoFeedback);
-  echoFeedback.connect(echoDelay);
-
-  // Connect everything
-  oscillators.forEach(osc => osc.connect(masterGain));
-  pinkNoiseNode.connect(masterGain);
-  masterGain.connect(eqFilter);
-  eqFilter.connect(pulsatorGain);
-  pulsatorGain.connect(echoDelay);
-  chorusDelays.forEach(d => pulsatorGain.connect(d));
-  chorusDelays.forEach(d => d.connect(audioCtx.destination));
-  echoDelay.connect(audioCtx.destination);
-  masterGain.connect(audioCtx.destination); // dry path
-}
-
-function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
-function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.75 * intensity, audioCtx.currentTime); }
-
-function togglePause() {
-  isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.75 * intensity : 0, audioCtx.currentTime);
-}
-
-// ==================== VISUALIZATION ENGINE ====================
+// ==================== ADVANCED VISUALISATION ====================
 let canvas, ctx, particles = [], animationFrame;
 function initViz() {
   canvas = document.getElementById('viz');
   ctx = canvas.getContext('2d');
-  
-  // Star particles
-  for (let i = 0; i < 280; i++) {
+  for (let i = 0; i < 420; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 2.5 + 0.5,
-      speed: Math.random() * 0.6 + 0.2
+      size: Math.random() * 3 + 0.6,
+      speed: Math.random() * 1.1 + 0.3,
+      hue: Math.random() * 60 + 180
     });
   }
 }
-
 function drawViz() {
   animationFrame = requestAnimationFrame(drawViz);
-  
-  ctx.fillStyle = 'rgba(10,0,31,0.12)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Twinkling stars
+  ctx.fillStyle = 'rgba(8,2,35,0.18)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Nebula glow
+  const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 80, canvas.width/2, canvas.height/2, 900);
+  grad.addColorStop(0, 'rgba(120,40,255,0.12)');
+  grad.addColorStop(1, 'rgba(0,255,255,0.08)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Particles
   ctx.fillStyle = '#fff';
   particles.forEach(p => {
     p.y -= p.speed;
     if (p.y < 0) p.y = canvas.height;
-    ctx.globalAlpha = Math.random() * 0.8 + 0.4;
+    ctx.globalAlpha = Math.sin(Date.now()/300 + p.x) * 0.4 + 0.7;
     ctx.fillRect(p.x, p.y, p.size, p.size);
   });
   ctx.globalAlpha = 1;
-  
-  // Central sacred geometry orb
-  const time = Date.now() / 800;
-  const pulse = Math.sin(time * 2) * 12 + 85;
-  ctx.shadowBlur = 60;
+
+  // Real-time analyser waveform & spectrum
+  if (analyser) {
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteFrequencyData(dataArray);
+
+    // Spectrum bars
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 2.5;
+    for (let i = 0; i < 80; i++) {
+      const x = (i * canvas.width / 80);
+      const barHeight = (dataArray[i*8] / 255) * canvas.height * 0.7;
+      ctx.beginPath();
+      ctx.moveTo(x, canvas.height);
+      ctx.lineTo(x, canvas.height - barHeight);
+      ctx.stroke();
+    }
+
+    // Central waveform
+    ctx.shadowBlur = 35;
+    ctx.shadowColor = '#ffd700';
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    for (let i = 0; i < bufferLength; i += 4) {
+      const x = (i / bufferLength) * canvas.width;
+      const v = dataArray[i] / 128.0;
+      const y = (canvas.height / 2) + (v * canvas.height / 3) * Math.sin(i / 20);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  // Sacred 777 orb
+  const time = Date.now() / 700;
+  const pulse = Math.sin(time * 2.8) * 18 + 92;
+  ctx.shadowBlur = 85;
   ctx.shadowColor = '#ffd700';
-  ctx.strokeStyle = 'rgba(255,215,0,0.7)';
-  ctx.lineWidth = 8;
+  ctx.strokeStyle = 'rgba(255,215,0,0.85)';
+  ctx.lineWidth = 11;
   ctx.beginPath();
   ctx.arc(canvas.width/2, canvas.height/2, pulse, 0, Math.PI*2);
   ctx.stroke();
-  
-  // Rotating 777
+
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(time * 0.3);
-  ctx.font = 'bold 92px monospace';
+  ctx.rotate(time * 0.25);
+  ctx.font = 'bold 110px Orbitron';
   ctx.fillStyle = '#00ffff';
   ctx.shadowColor = '#00ffff';
-  ctx.shadowBlur = 30;
+  ctx.shadowBlur = 45;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('777', 0, 0);
   ctx.restore();
-  
-  // Waveform + spectrum (placeholder for real analyser – would require AnalyserNode in full production)
-  ctx.strokeStyle = '#00ffff';
-  ctx.lineWidth = 3;
-  ctx.shadowBlur = 25;
-  ctx.shadowColor = '#00ffff';
-  ctx.beginPath();
-  for (let i = 0; i < 128; i++) {
-    const x = (i / 128) * canvas.width;
-    const y = canvas.height / 2 + Math.sin(i / 8 + time * 3) * 40;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  
-  // Frequency highlight
-  ctx.fillStyle = '#ffd700';
-  ctx.font = 'bold 28px monospace';
-  ctx.fillText('777 Hz • DIVINE RESONANCE • LIVE DECODED', 80, 110);
-}
 
-// ==================== CONTROLS & START ====================
-function toggleFullScreen() {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '700 26px monospace';
+  ctx.fillText('777Hz • LIVE DIVINE BROADCAST • SOURCE ALIGNED', 95, 115);
 }
 
 window.onload = () => {
-  initAudio();
   initViz();
   drawViz();
-  // Auto-start the divine transmission
-  setTimeout(() => { initAudio(); }, 600);
-  console.log('%c🔴 OMNI-777 COSMIC TRANSMISSION LIVE • DECODED FROM SOURCE', 'color:#ffd700; font-size:18px;');
+  console.log('%cOMNI-777 v3.0 READY • Click ACTIVATE to awaken the full cosmic radio transmission', 'color:#00ffff; font-size:18px;');
 };
 </script>
 </body>
