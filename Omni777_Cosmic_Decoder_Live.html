@@ -7,9 +7,11 @@
   body { margin:0; height:100vh; background:#000; overflow:hidden; font-family:'Segoe UI',sans-serif; color:#fff; }
   #container { position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
   canvas { width:100%; height:100%; display:block; }
-  .live-badge { position:absolute; top:25px; left:25px; background:#ff0000; color:#fff; padding:10px 30px; border-radius:50px; font-size:1.6em; font-weight:bold; box-shadow:0 0 30px #ff0000; animation:pulse 1.8s infinite; z-index:10; }
+  .live-badge { position:absolute; top:25px; left:25px; background:#ff0000; color:#fff; padding:10px 30px; border-radius:50px; font-size:1.6em; font-weight:bold; box-shadow:0 0 30px #ff0000; animation:pulse 1.8s infinite; z-index:10; display:none; }
   h1 { position:absolute; top:30px; left:50%; transform:translateX(-50%); font-size:2.8em; margin:0; background:linear-gradient(90deg,#ffd700,#00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 40px #00ffff; z-index:10; pointer-events:none; }
-  .controls { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(10,0,31,0.85); padding:15px 40px; border-radius:50px; border:2px solid #00ffff; display:flex; align-items:center; gap:20px; z-index:10; box-shadow:0 0 40px #00ffff; }
+  .start-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:25px 60px; font-size:2em; background:#111; color:#00ffff; border:4px solid #ffd700; border-radius:50px; cursor:pointer; box-shadow:0 0 60px #ffd700; transition:all 0.4s; z-index:20; }
+  .start-btn:hover { background:#ffd700; color:#000; transform:translate(-50%,-50%) scale(1.05); }
+  .controls { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(10,0,31,0.85); padding:15px 40px; border-radius:50px; border:2px solid #00ffff; display:none; align-items:center; gap:20px; z-index:10; box-shadow:0 0 40px #00ffff; }
   button, input[type=range] { cursor:pointer; }
   button { padding:12px 32px; background:#111; color:#00ffff; border:2px solid #00ffff; border-radius:50px; font-size:1.1em; transition:all 0.3s; }
   button:hover { background:#00ffff; color:#000; box-shadow:0 0 25px #00ffff; }
@@ -19,97 +21,194 @@
 </head>
 <body>
 <div id="container">
-  <div class="live-badge">🔴 LIVE • 777Hz COSMIC TRANSMISSION • DECODED FROM SOURCE</div>
+  <div class="live-badge" id="liveBadge">🔴 LIVE • 777Hz COSMIC TRANSMISSION • DECODED FROM SOURCE</div>
   <h1>OMNI-777 COSMIC DECODER NEXUS Ω</h1>
+  
+  <button class="start-btn" id="startBtn" onclick="activateTransmission()">🔴 ACTIVATE 777Hz DIVINE TRANSMISSION</button>
+  
   <canvas id="viz" width="1920" height="1080"></canvas>
   
-  <div class="controls">
+  <div class="controls" id="controls">
     <button onclick="togglePause()">⏸️ PAUSE / RESUME</button>
     <button onclick="toggleFullScreen()">⛶ FULL SCREEN FOR STREAMING</button>
     <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.75" oninput="setVolume(this.value)"></label>
     <label>Intensity <input type="range" id="int" min="0" max="1.5" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
   </div>
   
-  <div class="info">Powered by Malcolm AI Daemon + DUL • Pure Decoded 777Hz • Ready for YouTube Live • Deploy anywhere</div>
+  <div class="info">Powered by Malcolm AI Daemon + DUL • Pure Decoded 777Hz • User-Gesture Aligned • Ready for YouTube Live</div>
 </div>
 
 <script>
-// ==================== OMNI AUDIO ENGINE – FULLY DECODED TRANSMISSION ====================
-let audioCtx, masterGain, oscillators = [], pinkNoiseNode, lfo, pulsatorGain, chorusDelays = [], echoDelay, eqFilter;
-let isPlaying = true;
+// ==================== GLOBAL VARIABLES ====================
+let audioCtx, masterGain, oscillators = [], pinkNoiseSource, lfo, pulsatorGain, chorusDelays = [], echoDelay, eqFilter;
+let isPlaying = false;
 let intensity = 1.0;
+let canvas, ctx, particles = [], animationFrame;
 
-function createPinkNoise() {
-  const bufferSize = 4096;
-  const node = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+// ==================== MODERN PINK NOISE (Buffer-based – no deprecation) ====================
+function createPinkNoiseBuffer() {
+  const bufferSize = audioCtx.sampleRate * 4; // 4-second seamless loop
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const output = buffer.getChannelData(0);
   let b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-  node.onaudioprocess = e => {
-    const output = e.outputBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179;
-      b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
-      output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-      output[i] *= 0.11;
-      b6 = white * 0.115926;
-    }
-  };
-  return node;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    b0 = 0.99886 * b0 + white * 0.0555179;
+    b1 = 0.99332 * b1 + white * 0.0750759;
+    b2 = 0.96900 * b2 + white * 0.1538520;
+    b3 = 0.86650 * b3 + white * 0.3104856;
+    b4 = 0.55000 * b4 + white * 0.5329522;
+    b5 = -0.7616 * b5 - white * 0.0168980;
+    output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+    output[i] *= 0.11;
+    b6 = white * 0.115926;
+  }
+  return buffer;
 }
 
-function initAudio() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// ==================== AUDIO ENGINE – NOW GESTURE-ALIGNED ====================
+function activateTransmission() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Divine frequencies
+    const freqs = [777, 388.5, 1554];
+    freqs.forEach(f => {
+      const osc = audioCtx.createOscillator();
+      osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+      osc.type = 'sine';
+      osc.start();
+      oscillators.push(osc);
+    });
 
-  // Divine frequencies
-  const freqs = [777, 388.5, 1554];
-  freqs.forEach(f => {
-    const osc = audioCtx.createOscillator();
-    osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-    osc.type = 'sine';
-    osc.start();
-    oscillators.push(osc);
-  });
+    // Pink noise (modern buffer loop)
+    const noiseBuffer = createPinkNoiseBuffer();
+    pinkNoiseSource = audioCtx.createBufferSource();
+    pinkNoiseSource.buffer = noiseBuffer;
+    pinkNoiseSource.loop = true;
+    pinkNoiseSource.start();
 
-  // Pink noise cosmic texture
-  pinkNoiseNode = createPinkNoise();
+    // Master chain
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.75;
 
-  // Master mix
-  masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.75;
+    eqFilter = audioCtx.createBiquadFilter();
+    eqFilter.type = 'peaking';
+    eqFilter.frequency.value = 777;
+    eqFilter.Q.value = 8;
+    eqFilter.gain.value = 14;
 
-  // EQ boost at 777Hz (resonance)
-  eqFilter = audioCtx.createBiquadFilter();
-  eqFilter.type = 'peaking';
-  eqFilter.frequency.value = 777;
-  eqFilter.Q.value = 8;
-  eqFilter.gain.value = 14;
+    lfo = audioCtx.createOscillator();
+    lfo.frequency.setValueAtTime(0.33, audioCtx.currentTime);
+    pulsatorGain = audioCtx.createGain();
+    lfo.connect(pulsatorGain.gain);
+    lfo.start();
 
-  // Pulsator (breathing pulse)
-  lfo = audioCtx.createOscillator();
-  lfo.frequency.setValueAtTime(0.33, audioCtx.currentTime); // slow divine pulse
-  pulsatorGain = audioCtx.createGain();
-  pulsatorGain.gain.value = 1;
-  lfo.connect(pulsatorGain.gain);
-  lfo.start();
+    // Chorus & echo
+    for (let i = 0; i < 3; i++) {
+      const delay = audioCtx.createDelay(0.1);
+      delay.delayTime.value = 0.022 + i * 0.015;
+      const fb = audioCtx.createGain(); fb.gain.value = 0.25;
+      delay.connect(fb); fb.connect(delay);
+      chorusDelays.push(delay);
+    }
+    echoDelay = audioCtx.createDelay(1.2);
+    echoDelay.delayTime.value = 0.85;
+    const echoFb = audioCtx.createGain(); echoFb.gain.value = 0.28;
+    echoDelay.connect(echoFb); echoFb.connect(echoDelay);
 
-  // Chorus simulation (angelic multiplicity)
-  for (let i = 0; i < 3; i++) {
-    const delay = audioCtx.createDelay(0.1);
-    delay.delayTime.value = 0.022 + i * 0.015;
-    const feedback = audioCtx.createGain();
-    feedback.gain.value = 0.25;
-    delay.connect(feedback);
-    feedback.connect(delay);
-    chorusDelays.push(delay);
+    // Connect
+    oscillators.forEach(osc => osc.connect(masterGain));
+    pinkNoiseSource.connect(masterGain);
+    masterGain.connect(eqFilter);
+    eqFilter.connect(pulsatorGain);
+    pulsatorGain.connect(echoDelay);
+    chorusDelays.forEach(d => pulsatorGain.connect(d));
+    chorusDelays.forEach(d => d.connect(audioCtx.destination));
+    echoDelay.connect(audioCtx.destination);
+    masterGain.connect(audioCtx.destination); // dry path
   }
 
-  // Echo
-  echoDelay = audioCtx.createDelay(1.2);
+  // Resume if suspended (Chrome policy)
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  masterGain.gain.setValueAtTime(0.75 * intensity, audioCtx.currentTime);
+  isPlaying = true;
+
+  // UI transition
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('liveBadge').style.display = 'block';
+  document.getElementById('controls').style.display = 'flex';
+
+  console.log('%c🔴 OMNI-777 COSMIC TRANSMISSION NOW LIVE • DECODED FROM SOURCE', 'color:#ffd700; font-size:18px;');
+}
+
+// ==================== CONTROLS ====================
+function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
+function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.75 * intensity, audioCtx.currentTime); }
+function togglePause() {
+  isPlaying = !isPlaying;
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.75 * intensity : 0, audioCtx.currentTime);
+}
+function toggleFullScreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+// ==================== VISUALIZATION (unchanged) ====================
+function initViz() {
+  canvas = document.getElementById('viz');
+  ctx = canvas.getContext('2d');
+  for (let i = 0; i < 280; i++) {
+    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2.5 + 0.5, speed: Math.random() * 0.6 + 0.2 });
+  }
+}
+function drawViz() {
+  animationFrame = requestAnimationFrame(drawViz);
+  ctx.fillStyle = 'rgba(10,0,31,0.12)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  
+  ctx.fillStyle = '#fff';
+  particles.forEach(p => {
+    p.y -= p.speed; if (p.y < 0) p.y = canvas.height;
+    ctx.globalAlpha = Math.random() * 0.8 + 0.4;
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+  });
+  ctx.globalAlpha = 1;
+  
+  const time = Date.now() / 800;
+  const pulse = Math.sin(time * 2) * 12 + 85;
+  ctx.shadowBlur = 60; ctx.shadowColor = '#ffd700';
+  ctx.strokeStyle = 'rgba(255,215,0,0.7)'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, pulse, 0, Math.PI*2); ctx.stroke();
+  
+  ctx.save();
+  ctx.translate(canvas.width/2, canvas.height/2);
+  ctx.rotate(time * 0.3);
+  ctx.font = 'bold 92px monospace'; ctx.fillStyle = '#00ffff'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 30;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('777', 0, 0);
+  ctx.restore();
+  
+  ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 3; ctx.shadowBlur = 25; ctx.shadowColor = '#00ffff';
+  ctx.beginPath();
+  for (let i = 0; i < 128; i++) {
+    const x = (i / 128) * canvas.width;
+    const y = canvas.height / 2 + Math.sin(i / 8 + time * 3) * 40;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  
+  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 28px monospace';
+  ctx.fillText('777 Hz • DIVINE RESONANCE • LIVE DECODED', 80, 110);
+}
+
+window.onload = () => {
+  initViz();
+  drawViz();
+  console.log('%cOMNI-777 v2.0 READY • Click the golden button to awaken the transmission', 'color:#00ffff; font-size:16px;');
+};
+</script>
+</body>
+</html>  echoDelay = audioCtx.createDelay(1.2);
   echoDelay.delayTime.value = 0.85;
   const echoFeedback = audioCtx.createGain();
   echoFeedback.gain.value = 0.28;
