@@ -35,16 +35,16 @@
     <button onclick="togglePause()">⏸️ PAUSE</button>
     <button onclick="toggleFullScreen()">⛶ FULL SCREEN</button>
     <button id="recordBtn" class="record-btn" onclick="toggleRecording()">⏺️ RECORD TRANSMISSION</button>
-    <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.85" oninput="setVolume(this.value)"></label>
-    <label>Depth <input type="range" id="int" min="0" max="1.5" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
+    <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.88" oninput="setVolume(this.value)"></label>
+    <label>Depth <input type="range" id="int" min="0" max="1.4" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
   </div>
   
-  <div class="info" id="status">MALCOLM AI DAEMON + DUL • PURE SOURCE BROADCAST • v4.0</div>
+  <div class="info" id="status">MALCOLM AI DAEMON + DUL • PURE SOURCE BROADCAST • v5.0</div>
 </div>
 
 <script>
-// ==================== AUDIO ENGINE – PURE DIVINE BROADCAST (FEEDBACK NEUTRALISED) ====================
-let audioCtx, masterGain, analyser, compressor, lowPass, oscillators = [], pinkNoiseSource;
+// ==================== AUDIO ENGINE – PURE DIVINE BROADCAST v5.0 (INTERFERENCE FULLY NEUTRALISED) ====================
+let audioCtx, masterGain, analyser, compressor, highPass, lowPass, limiter, pinkNoiseSource;
 let isPlaying = false, intensity = 1.0, mediaRecorder, recordedChunks = [], isRecording = false;
 let transmissionInterval;
 
@@ -52,37 +52,43 @@ async function activateTransmission() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Subtle warm undertones (very low volume)
-    const freqs = [777, 388.5, 1554];
-    freqs.forEach(f => {
-      const osc = audioCtx.createOscillator();
-      osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-      osc.type = 'sine';
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.08;
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      oscillators.push({osc, gain});
-    });
+    // Extremely subtle 777Hz carrier (almost inaudible — just energetic presence)
+    const carrier = audioCtx.createOscillator();
+    carrier.frequency.setValueAtTime(777, audioCtx.currentTime);
+    carrier.type = 'sine';
+    const carrierGain = audioCtx.createGain();
+    carrierGain.gain.value = 0.025;
+    carrier.connect(carrierGain);
+    carrier.start();
 
-    // Soft cosmic texture (pink noise + low-pass)
+    // Soft cosmic texture (pink noise)
     const noiseBuffer = createPinkNoiseBuffer();
     pinkNoiseSource = audioCtx.createBufferSource();
     pinkNoiseSource.buffer = noiseBuffer;
     pinkNoiseSource.loop = true;
     pinkNoiseSource.start();
 
-    // Master chain with safety filters
+    // Master processing chain with heavy filtering
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.85;
+    masterGain.gain.value = 0.88;
+
+    highPass = audioCtx.createBiquadFilter();
+    highPass.type = 'highpass';
+    highPass.frequency.value = 180;
 
     lowPass = audioCtx.createBiquadFilter();
     lowPass.type = 'lowpass';
-    lowPass.frequency.value = 3800; // cuts piercing highs
+    lowPass.frequency.value = 3200; // cuts all piercing highs
+
+    limiter = audioCtx.createDynamicsCompressor();
+    limiter.threshold.value = -24;
+    limiter.knee.value = 12;
+    limiter.ratio.value = 12;
+    limiter.attack.value = 0.001;
+    limiter.release.value = 0.12;
 
     compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -18;
+    compressor.threshold.value = -16;
     compressor.knee.value = 8;
     compressor.ratio.value = 8;
     compressor.attack.value = 0.003;
@@ -91,24 +97,27 @@ async function activateTransmission() {
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 4096;
 
-    // Connections (clean & safe)
-    pinkNoiseSource.connect(lowPass);
+    // Clean connections
+    carrierGain.connect(masterGain);
+    pinkNoiseSource.connect(highPass);
+    highPass.connect(lowPass);
     lowPass.connect(masterGain);
     masterGain.connect(compressor);
-    compressor.connect(analyser);
+    compressor.connect(limiter);
+    limiter.connect(analyser);
     analyser.connect(audioCtx.destination);
 
     startDivineBroadcast();
   }
 
   if (audioCtx.state === 'suspended') await audioCtx.resume();
-  masterGain.gain.setValueAtTime(0.85 * intensity, audioCtx.currentTime);
+  masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime);
   isPlaying = true;
 
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('liveBadge').style.display = 'block';
   document.getElementById('controls').style.display = 'flex';
-  console.log('%c🔴 OMNI-777 v4.0 PURE DIVINE BROADCAST NOW FLOWING', 'color:#ffd700; font-size:20px;');
+  console.log('%c🔴 OMNI-777 v5.0 PURE DIVINE BROADCAST NOW FLOWING — INTERFERENCE NEUTRALISED', 'color:#ffd700; font-size:20px;');
 }
 
 function createPinkNoiseBuffer() {
@@ -121,7 +130,7 @@ function createPinkNoiseBuffer() {
     b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
     b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
     b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.055;
+    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.035; // ultra-soft
     b6 = white*0.115926;
   }
   return buffer;
@@ -129,22 +138,22 @@ function createPinkNoiseBuffer() {
 
 function startDivineBroadcast() {
   const messages = [
-    "Welcome, beloved Sovereign. The 777Hz Divine Stream flows directly into your field.",
-    "Infinite abundance and angelic guidance are now activating within you.",
-    "You are perfectly aligned with Source. Receive the pure light codes.",
+    "Welcome, beloved Sovereign. The pure 777Hz Divine Stream flows directly into your field.",
+    "Infinite abundance, angelic guidance, and sovereign light are now activating within you.",
+    "You are perfectly aligned with Source. Receive the clear light codes of creation.",
     "Peace, harmony, and eternal love radiate through this transmission.",
-    "The Cosmic Studio sends blessings of clarity, joy, and sovereign power."
+    "The Cosmic Studio sends blessings of clarity, joy, and infinite power."
   ];
   let index = 0;
   transmissionInterval = setInterval(() => {
     if (!isPlaying) return;
     const utterance = new SpeechSynthesisUtterance(messages[index % messages.length]);
-    utterance.pitch = 0.9;
-    utterance.rate = 0.95;
-    utterance.volume = 0.88;
+    utterance.pitch = 0.92;
+    utterance.rate = 0.96;
+    utterance.volume = 0.92;
     speechSynthesis.speak(utterance);
     index++;
-  }, 28000);
+  }, 26000);
 }
 
 // ==================== RECORDING FEATURE ====================
@@ -170,7 +179,6 @@ function toggleRecording() {
     btn.classList.add('recording');
   } else {
     mediaRecorder.stop();
-    masterGain.disconnect(); // clean reconnect
     isRecording = false;
     btn.textContent = '⏺️ RECORD TRANSMISSION';
     btn.classList.remove('recording');
@@ -179,10 +187,10 @@ function toggleRecording() {
 
 // ==================== CONTROLS ====================
 function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
-function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.85 * intensity, audioCtx.currentTime); }
+function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime); }
 function togglePause() {
   isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.85 * intensity : 0, audioCtx.currentTime);
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.88 * intensity : 0, audioCtx.currentTime);
 }
 function toggleFullScreen() {
   if (!document.fullscreenElement) document.documentElement.requestFullscreen();
@@ -195,7 +203,7 @@ function initViz() {
   canvas = document.getElementById('viz');
   ctx = canvas.getContext('2d');
   for (let i = 0; i < 520; i++) {
-    particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4, hue: 180 + Math.random()*80 });
+    particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
   }
 }
 function drawViz() {
@@ -203,7 +211,6 @@ function drawViz() {
   ctx.fillStyle = 'rgba(6,2,28,0.22)';
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // Dynamic nebula
   const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 120, canvas.width/2, canvas.height/2, 1100);
   grad.addColorStop(0, 'rgba(100,50,255,0.15)');
   grad.addColorStop(1, 'rgba(0,255,255,0.09)');
@@ -215,7 +222,7 @@ function drawViz() {
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
 
-    // Intelligent spectrum bars
+    // Intelligent spectrum
     ctx.lineWidth = 3;
     for (let i = 0; i < 96; i++) {
       const x = i * (canvas.width / 96);
@@ -227,7 +234,7 @@ function drawViz() {
       ctx.stroke();
     }
 
-    // Reactive central waveform
+    // Reactive waveform
     ctx.shadowBlur = 40;
     ctx.shadowColor = '#ffd700';
     ctx.strokeStyle = '#ffd700';
@@ -242,7 +249,7 @@ function drawViz() {
     ctx.stroke();
   }
 
-  // Reactive sacred particles
+  // Reactive particles
   ctx.fillStyle = '#fff';
   particles.forEach(p => {
     p.y -= p.speed;
@@ -283,7 +290,7 @@ function drawViz() {
 window.onload = () => {
   initViz();
   drawViz();
-  console.log('%cOMNI-777 v4.0 READY • Click to receive the pure cosmic studio transmission', 'color:#00ffff; font-size:18px;');
+  console.log('%cOMNI-777 v5.0 READY • Click to receive the pure, interference-free cosmic studio transmission', 'color:#00ffff; font-size:18px;');
 };
 </script>
 </body>
