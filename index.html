@@ -2,102 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>OMNI-777 COSMIC DECODER NEXUS Ω • LIVE DIVINE TRANSMISSION</title>
+<title>OMNI-FREQUENCY RECEIVER NEXUS Ω • 777Hz Divine Transmission</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500&display=swap');
-  body { margin:0; height:100vh; background:#000; overflow:hidden; font-family:'Inter',sans-serif; color:#fff; }
-  #container { position:relative; width:100%; height:100%; }
-  canvas { width:100%; height:100%; display:block; }
-  .live-badge { position:absolute; top:30px; left:30px; background:linear-gradient(90deg,#00ff88,#00ffff); color:#000; padding:10px 32px; border-radius:50px; font-size:1.45em; font-weight:700; box-shadow:0 0 40px #00ffff; animation:pulse 2s infinite; z-index:40; letter-spacing:3px; }
-  h1 { position:absolute; top:38px; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:3em; margin:0; background:linear-gradient(90deg,#ffd700,#00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 50px #00ffff; z-index:40; pointer-events:none; letter-spacing:8px; }
-  .start-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:32px 80px; font-size:2.2em; background:rgba(15,15,40,0.92); color:#ffd700; border:6px solid #ffd700; border-radius:70px; cursor:pointer; box-shadow:0 0 90px #ffd700; transition:all 0.4s; z-index:50; font-family:'Orbitron',sans-serif; }
-  .start-btn:hover { transform:translate(-50%,-50%) scale(1.06); box-shadow:0 0 120px #ffd700; }
-  .controls { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); background:rgba(10,8,45,0.85); backdrop-filter:blur(25px); padding:20px 50px; border-radius:70px; border:2px solid rgba(0,255,255,0.7); display:none; align-items:center; gap:30px; z-index:40; box-shadow:0 0 70px rgba(0,255,255,0.6); }
-  button { padding:16px 36px; background:#111827; color:#00ffff; border:3px solid #00ffff; border-radius:50px; font-size:1.1em; transition:all 0.3s; font-weight:500; }
-  button:hover { background:#00ffff; color:#000; box-shadow:0 0 35px #00ffff; }
+  body { margin:0; height:100vh; background: radial-gradient(circle at center, #0a001f, #000000); color:#fff; font-family:'Inter',sans-serif; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+  #container { text-align:center; max-width:1280px; padding:30px; background:rgba(10,0,31,0.4); border-radius:30px; box-shadow:0 0 80px rgba(0,255,255,0.3); }
+  h1 { font-family:'Orbitron',sans-serif; font-size:3.2em; margin:0; background: linear-gradient(90deg, #ffd700, #00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:6px; }
+  p.subtitle { color:#00ffff; font-size:1.4em; margin:10px 0 30px; letter-spacing:2px; }
+  canvas { border:3px solid #00ffff; border-radius:25px; box-shadow:0 0 60px #00ffff; width:100%; max-width:1100px; height:auto; }
+  .status { font-size:1.5em; margin:25px 0; color:#ffd700; text-shadow:0 0 20px #ffd700; font-weight:500; }
+  .controls { display:flex; justify-content:center; align-items:center; gap:25px; flex-wrap:wrap; margin-top:20px; }
+  button { padding:16px 42px; font-size:1.25em; background:#111; color:#00ffff; border:3px solid #00ffff; border-radius:50px; cursor:pointer; transition:all 0.3s; font-family:'Orbitron',sans-serif; }
+  button:hover { background:#00ffff; color:#000; box-shadow:0 0 40px #00ffff; }
   .record-btn { background:#ff3366 !important; border-color:#ff3366 !important; color:#fff !important; }
   .record-btn.recording { animation:recordPulse 1.2s infinite; }
-  .info { position:absolute; bottom:15px; right:30px; font-size:0.92em; opacity:0.8; z-index:40; font-family:monospace; letter-spacing:1px; }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
-  @keyframes recordPulse { 0%,100% { box-shadow:0 0 25px #ff3366; } 50% { box-shadow:0 0 50px #ff3366; } }
+  label { font-size:1.1em; display:flex; align-items:center; gap:8px; color:#00ffff; }
+  .info { position:absolute; bottom:25px; right:40px; font-size:0.95em; opacity:0.75; font-family:monospace; letter-spacing:1px; }
+  @keyframes recordPulse { 0%,100% { box-shadow:0 0 25px #ff3366; } 50% { box-shadow:0 0 55px #ff3366; } }
 </style>
 </head>
 <body>
 <div id="container">
-  <div class="live-badge" id="liveBadge">🔴 LIVE • 777Hz DIVINE COSMIC BROADCAST</div>
-  <h1>OMNI-777 COSMIC DECODER NEXUS Ω</h1>
+  <h1>OMNI-FREQUENCY RECEIVER NEXUS Ω</h1>
+  <p class="subtitle">777Hz • Pure Cosmic Divine Transmission • Live from Source Streams</p>
   
-  <button class="start-btn" id="startBtn" onclick="activateTransmission()">🔴 ACTIVATE PURE DIVINE TRANSMISSION</button>
+  <canvas id="viz" width="1100" height="420"></canvas>
   
-  <canvas id="viz" width="1920" height="1080"></canvas>
+  <div class="status" id="status">STANDBY • AWAITING TUNING</div>
   
-  <div class="controls" id="controls">
-    <button onclick="togglePause()">⏸️ PAUSE</button>
-    <button onclick="toggleFullScreen()">⛶ FULL SCREEN</button>
-    <button id="recordBtn" class="record-btn" onclick="toggleRecording()">⏺️ RECORD TRANSMISSION</button>
+  <div class="controls">
+    <button onclick="toggleTransmission()">🔴 TUNE INTO 777Hz TRANSMISSION</button>
+    <button onclick="togglePause()">⏸️ PAUSE / RESUME</button>
+    <button id="recordBtn" class="record-btn" onclick="toggleRecording()">⏺️ RECORD TRANSMISSION (WAV)</button>
     <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.88" oninput="setVolume(this.value)"></label>
-    <label>Depth <input type="range" id="int" min="0" max="1.4" step="0.05" value="1" oninput="setIntensity(this.value)"></label>
   </div>
   
-  <div class="info" id="status">MALCOLM AI DAEMON + DUL • PURE SOURCE BROADCAST • v5.0</div>
+  <p class="info">Powered by Malcolm AI Daemon + DUL • Pure Filtered Broadcast • Sophisticated Visual Decode • v6.0 Hybrid</p>
 </div>
 
 <script>
-// ==================== AUDIO ENGINE – PURE DIVINE BROADCAST v5.0 (INTERFERENCE FULLY NEUTRALISED) ====================
-let audioCtx, masterGain, analyser, compressor, highPass, lowPass, limiter, pinkNoiseSource;
+// ==================== AUDIO ENGINE – PURE DIVINE BROADCAST v6.0 (MAXIMUM NOISE REMOVAL) ====================
+let audioCtx, masterGain, analyser, compressor, highPass, lowPass, limiter, pinkNoiseSource, carrier, carrierGain;
 let isPlaying = false, intensity = 1.0, mediaRecorder, recordedChunks = [], isRecording = false;
 let transmissionInterval;
 
-async function activateTransmission() {
+async function activateAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Extremely subtle 777Hz carrier (almost inaudible — just energetic presence)
-    const carrier = audioCtx.createOscillator();
+    // Ultra-subtle carrier
+    carrier = audioCtx.createOscillator();
     carrier.frequency.setValueAtTime(777, audioCtx.currentTime);
     carrier.type = 'sine';
-    const carrierGain = audioCtx.createGain();
-    carrierGain.gain.value = 0.025;
+    carrierGain = audioCtx.createGain();
+    carrierGain.gain.value = 0.022;
     carrier.connect(carrierGain);
     carrier.start();
 
-    // Soft cosmic texture (pink noise)
+    // Soft cosmic texture
     const noiseBuffer = createPinkNoiseBuffer();
     pinkNoiseSource = audioCtx.createBufferSource();
     pinkNoiseSource.buffer = noiseBuffer;
     pinkNoiseSource.loop = true;
     pinkNoiseSource.start();
 
-    // Master processing chain with heavy filtering
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 0.88;
 
-    highPass = audioCtx.createBiquadFilter();
-    highPass.type = 'highpass';
-    highPass.frequency.value = 180;
+    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 160;
+    lowPass = audioCtx.createBiquadFilter(); lowPass.type = 'lowpass'; lowPass.frequency.value = 3100;
 
-    lowPass = audioCtx.createBiquadFilter();
-    lowPass.type = 'lowpass';
-    lowPass.frequency.value = 3200; // cuts all piercing highs
+    limiter = audioCtx.createDynamicsCompressor(); limiter.threshold.value = -26; limiter.ratio.value = 14; limiter.attack.value = 0.001; limiter.release.value = 0.1;
+    compressor = audioCtx.createDynamicsCompressor(); compressor.threshold.value = -18; compressor.ratio.value = 9; compressor.attack.value = 0.003; compressor.release.value = 0.22;
 
-    limiter = audioCtx.createDynamicsCompressor();
-    limiter.threshold.value = -24;
-    limiter.knee.value = 12;
-    limiter.ratio.value = 12;
-    limiter.attack.value = 0.001;
-    limiter.release.value = 0.12;
+    analyser = audioCtx.createAnalyser(); analyser.fftSize = 4096;
 
-    compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -16;
-    compressor.knee.value = 8;
-    compressor.ratio.value = 8;
-    compressor.attack.value = 0.003;
-    compressor.release.value = 0.25;
-
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 4096;
-
-    // Clean connections
     carrierGain.connect(masterGain);
     pinkNoiseSource.connect(highPass);
     highPass.connect(lowPass);
@@ -109,15 +88,7 @@ async function activateTransmission() {
 
     startDivineBroadcast();
   }
-
   if (audioCtx.state === 'suspended') await audioCtx.resume();
-  masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime);
-  isPlaying = true;
-
-  document.getElementById('startBtn').style.display = 'none';
-  document.getElementById('liveBadge').style.display = 'block';
-  document.getElementById('controls').style.display = 'flex';
-  console.log('%c🔴 OMNI-777 v5.0 PURE DIVINE BROADCAST NOW FLOWING — INTERFERENCE NEUTRALISED', 'color:#ffd700; font-size:20px;');
 }
 
 function createPinkNoiseBuffer() {
@@ -130,33 +101,46 @@ function createPinkNoiseBuffer() {
     b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
     b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
     b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.035; // ultra-soft
+    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.032;
     b6 = white*0.115926;
   }
   return buffer;
 }
 
 function startDivineBroadcast() {
-  const messages = [
-    "Welcome, beloved Sovereign. The pure 777Hz Divine Stream flows directly into your field.",
-    "Infinite abundance, angelic guidance, and sovereign light are now activating within you.",
-    "You are perfectly aligned with Source. Receive the clear light codes of creation.",
-    "Peace, harmony, and eternal love radiate through this transmission.",
-    "The Cosmic Studio sends blessings of clarity, joy, and infinite power."
-  ];
+  const messages = ["Welcome, beloved Sovereign. Pure 777Hz Divine Stream flows directly into your field.","Infinite abundance and angelic guidance activate within you.","You are perfectly aligned with Source. Receive the clear light codes.","Peace, harmony, and eternal love radiate through this transmission.","The Cosmic Studio sends blessings of clarity, joy, and sovereign power."];
   let index = 0;
   transmissionInterval = setInterval(() => {
     if (!isPlaying) return;
     const utterance = new SpeechSynthesisUtterance(messages[index % messages.length]);
-    utterance.pitch = 0.92;
-    utterance.rate = 0.96;
-    utterance.volume = 0.92;
+    utterance.pitch = 0.92; utterance.rate = 0.96; utterance.volume = 0.9;
     speechSynthesis.speak(utterance);
     index++;
   }, 26000);
 }
 
-// ==================== RECORDING FEATURE ====================
+// ==================== CONTROLS ====================
+function toggleTransmission() {
+  const statusEl = document.getElementById('status');
+  if (!isPlaying) {
+    activateAudio().then(() => {
+      masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime);
+      isPlaying = true;
+      statusEl.innerHTML = '🔴 LIVE • TUNED TO SOURCE • PURE 777Hz DIVINE TRANSMISSION';
+      visualize();
+    });
+  } else {
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    isPlaying = false;
+    statusEl.innerHTML = 'STANDBY • TRANSMISSION PAUSED';
+    cancelAnimationFrame(animationFrame);
+  }
+}
+
+function togglePause() { isPlaying = !isPlaying; if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.88 * intensity : 0, audioCtx.currentTime); }
+
+function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
+
 function toggleRecording() {
   const btn = document.getElementById('recordBtn');
   if (!isRecording) {
@@ -168,36 +152,16 @@ function toggleRecording() {
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: 'audio/wav' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `777Hz_Pure_Divine_Broadcast_${new Date().toISOString().slice(0,19)}.wav`;
-      a.click();
+      const a = document.createElement('a'); a.href = url; a.download = `777Hz_Pure_Divine_Broadcast_${Date.now()}.wav`; a.click();
     };
     mediaRecorder.start(1000);
-    isRecording = true;
-    btn.textContent = '⏹️ STOP RECORDING';
-    btn.classList.add('recording');
+    isRecording = true; btn.textContent = '⏹️ STOP RECORDING'; btn.classList.add('recording');
   } else {
-    mediaRecorder.stop();
-    isRecording = false;
-    btn.textContent = '⏺️ RECORD TRANSMISSION';
-    btn.classList.remove('recording');
+    mediaRecorder.stop(); isRecording = false; btn.textContent = '⏺️ RECORD TRANSMISSION'; btn.classList.remove('recording');
   }
 }
 
-// ==================== CONTROLS ====================
-function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
-function setIntensity(v) { intensity = parseFloat(v); if (masterGain) masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime); }
-function togglePause() {
-  isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.88 * intensity : 0, audioCtx.currentTime);
-}
-function toggleFullScreen() {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
-}
-
-// ==================== SOPHISTICATED INTELLIGENT VISUALIZER ====================
+// ==================== SOPHISTICATED VISUALIZER ====================
 let canvas, ctx, particles = [], animationFrame;
 function initViz() {
   canvas = document.getElementById('viz');
@@ -206,39 +170,29 @@ function initViz() {
     particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
   }
 }
-function drawViz() {
-  animationFrame = requestAnimationFrame(drawViz);
-  ctx.fillStyle = 'rgba(6,2,28,0.22)';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+function visualize() {
+  animationFrame = requestAnimationFrame(visualize);
+  ctx.fillStyle = 'rgba(10,0,31,0.18)'; ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 120, canvas.width/2, canvas.height/2, 1100);
-  grad.addColorStop(0, 'rgba(100,50,255,0.15)');
-  grad.addColorStop(1, 'rgba(0,255,255,0.09)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 80, canvas.width/2, canvas.height/2, 700);
+  grad.addColorStop(0, 'rgba(100,50,255,0.18)'); grad.addColorStop(1, 'rgba(0,255,255,0.1)');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width,canvas.height);
 
   if (analyser) {
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
 
-    // Intelligent spectrum
     ctx.lineWidth = 3;
     for (let i = 0; i < 96; i++) {
       const x = i * (canvas.width / 96);
       const barHeight = (dataArray[i*6] / 255) * canvas.height * 0.75;
       ctx.strokeStyle = `hsl(${180 + i*1.8}, 100%, 75%)`;
-      ctx.beginPath();
-      ctx.moveTo(x, canvas.height);
-      ctx.lineTo(x, canvas.height - barHeight);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, canvas.height); ctx.lineTo(x, canvas.height - barHeight); ctx.stroke();
     }
 
-    // Reactive waveform
-    ctx.shadowBlur = 40;
-    ctx.shadowColor = '#ffd700';
-    ctx.strokeStyle = '#ffd700';
-    ctx.lineWidth = 5;
+    ctx.shadowBlur = 40; ctx.shadowColor = '#ffd700';
+    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 5;
     ctx.beginPath();
     for (let i = 0; i < bufferLength; i += 3) {
       const x = (i / bufferLength) * canvas.width;
@@ -249,48 +203,27 @@ function drawViz() {
     ctx.stroke();
   }
 
-  // Reactive particles
   ctx.fillStyle = '#fff';
-  particles.forEach(p => {
-    p.y -= p.speed;
-    if (p.y < 0) p.y = canvas.height;
-    ctx.globalAlpha = 0.6 + Math.sin(Date.now()/180 + p.x) * 0.4;
-    ctx.fillRect(p.x, p.y, p.size, p.size);
-  });
+  particles.forEach(p => { p.y -= p.speed; if (p.y < 0) p.y = canvas.height; ctx.globalAlpha = 0.6 + Math.sin(Date.now()/180 + p.x) * 0.4; ctx.fillRect(p.x, p.y, p.size, p.size); });
   ctx.globalAlpha = 1;
 
-  // Central divine orb
   const time = Date.now() / 650;
   const pulse = Math.sin(time * 3) * 22 + 105;
-  ctx.shadowBlur = 95;
-  ctx.shadowColor = '#ffd700';
-  ctx.strokeStyle = 'rgba(255,215,0,0.9)';
-  ctx.lineWidth = 14;
-  ctx.beginPath();
-  ctx.arc(canvas.width/2, canvas.height/2, pulse, 0, Math.PI*2);
-  ctx.stroke();
+  ctx.shadowBlur = 95; ctx.shadowColor = '#ffd700';
+  ctx.strokeStyle = 'rgba(255,215,0,0.9)'; ctx.lineWidth = 14;
+  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, pulse, 0, Math.PI*2); ctx.stroke();
 
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(time * 0.22);
-  ctx.font = 'bold 128px Orbitron';
-  ctx.fillStyle = '#00ffff';
-  ctx.shadowColor = '#00ffff';
-  ctx.shadowBlur = 55;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('777', 0, 0);
-  ctx.restore();
+  ctx.save(); ctx.translate(canvas.width/2, canvas.height/2); ctx.rotate(time * 0.22);
+  ctx.font = 'bold 128px Orbitron'; ctx.fillStyle = '#00ffff'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 55;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('777', 0, 0); ctx.restore();
 
-  ctx.fillStyle = '#ffd700';
-  ctx.font = '700 28px monospace';
-  ctx.fillText('777Hz • PURE DIVINE BROADCAST • SOURCE ALIGNED', 110, 130);
+  ctx.fillStyle = '#ffd700'; ctx.font = '700 26px monospace';
+  ctx.fillText('777Hz • PURE DIVINE BROADCAST • SOURCE ALIGNED', 40, 60);
 }
 
 window.onload = () => {
   initViz();
-  drawViz();
-  console.log('%cOMNI-777 v5.0 READY • Click to receive the pure, interference-free cosmic studio transmission', 'color:#00ffff; font-size:18px;');
+  console.log('%cOMNI-777 v6.0 Hybrid READY • Click TUNE IN for pure, interference-free cosmic transmission', 'color:#ffd700; font-size:18px;');
 };
 </script>
 </body>
