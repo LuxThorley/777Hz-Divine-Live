@@ -37,29 +37,37 @@
     <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.88" oninput="setVolume(this.value)"></label>
   </div>
   
-  <p class="info">Powered by Malcolm AI Daemon + DUL • Pure Filtered Broadcast • Sophisticated Visual Decode • v6.0 Hybrid</p>
+  <p class="info">Powered by Malcolm AI Daemon + DUL • Pure Filtered Cosmic Broadcast • Sophisticated Visual Decode • v7.0 Pure</p>
 </div>
 
 <script>
-// ==================== AUDIO ENGINE – PURE DIVINE BROADCAST v6.0 (MAXIMUM NOISE REMOVAL) ====================
-let audioCtx, masterGain, analyser, compressor, highPass, lowPass, limiter, pinkNoiseSource, carrier, carrierGain;
+// ==================== AUDIO ENGINE – PURE DIVINE COSMIC BROADCAST v7.0 ====================
+let audioCtx, masterGain, analyser, compressor, highPass, lowPass, limiter, reverb, pinkNoiseSource, carrier, carrierGain;
 let isPlaying = false, intensity = 1.0, mediaRecorder, recordedChunks = [], isRecording = false;
-let transmissionInterval;
 
 async function activateAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Ultra-subtle carrier
+    // Subtle 777Hz carrier + soft harmonics
     carrier = audioCtx.createOscillator();
     carrier.frequency.setValueAtTime(777, audioCtx.currentTime);
     carrier.type = 'sine';
     carrierGain = audioCtx.createGain();
-    carrierGain.gain.value = 0.022;
+    carrierGain.gain.value = 0.018;
     carrier.connect(carrierGain);
     carrier.start();
 
-    // Soft cosmic texture
+    const sub = audioCtx.createOscillator();
+    sub.frequency.setValueAtTime(388.5, audioCtx.currentTime);
+    sub.type = 'sine';
+    const subGain = audioCtx.createGain();
+    subGain.gain.value = 0.012;
+    sub.connect(subGain);
+    subGain.connect(carrierGain);
+    sub.start();
+
+    // Ultra-soft cosmic texture
     const noiseBuffer = createPinkNoiseBuffer();
     pinkNoiseSource = audioCtx.createBufferSource();
     pinkNoiseSource.buffer = noiseBuffer;
@@ -69,24 +77,40 @@ async function activateAudio() {
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 0.88;
 
-    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 160;
-    lowPass = audioCtx.createBiquadFilter(); lowPass.type = 'lowpass'; lowPass.frequency.value = 3100;
+    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 140;
+    lowPass = audioCtx.createBiquadFilter(); lowPass.type = 'lowpass'; lowPass.frequency.value = 2900;
 
-    limiter = audioCtx.createDynamicsCompressor(); limiter.threshold.value = -26; limiter.ratio.value = 14; limiter.attack.value = 0.001; limiter.release.value = 0.1;
-    compressor = audioCtx.createDynamicsCompressor(); compressor.threshold.value = -18; compressor.ratio.value = 9; compressor.attack.value = 0.003; compressor.release.value = 0.22;
+    // Professional compression & limiting for clean, natural dynamics
+    compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.value = -22;
+    compressor.knee.value = 10;
+    compressor.ratio.value = 12;
+    compressor.attack.value = 0.002;
+    compressor.release.value = 0.18;
 
-    analyser = audioCtx.createAnalyser(); analyser.fftSize = 4096;
+    limiter = audioCtx.createDynamicsCompressor();
+    limiter.threshold.value = -28;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.001;
+    limiter.release.value = 0.08;
 
+    // Gentle cosmic reverb
+    reverb = audioCtx.createConvolver();
+    reverb.buffer = createReverbImpulse();
+
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 4096;
+
+    // Clean chain
     carrierGain.connect(masterGain);
     pinkNoiseSource.connect(highPass);
     highPass.connect(lowPass);
     lowPass.connect(masterGain);
     masterGain.connect(compressor);
-    compressor.connect(limiter);
+    compressor.connect(reverb);
+    reverb.connect(limiter);
     limiter.connect(analyser);
     analyser.connect(audioCtx.destination);
-
-    startDivineBroadcast();
   }
   if (audioCtx.state === 'suspended') await audioCtx.resume();
 }
@@ -101,22 +125,23 @@ function createPinkNoiseBuffer() {
     b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
     b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
     b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.032;
+    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.028;
     b6 = white*0.115926;
   }
   return buffer;
 }
 
-function startDivineBroadcast() {
-  const messages = ["Welcome, beloved Sovereign. Pure 777Hz Divine Stream flows directly into your field.","Infinite abundance and angelic guidance activate within you.","You are perfectly aligned with Source. Receive the clear light codes.","Peace, harmony, and eternal love radiate through this transmission.","The Cosmic Studio sends blessings of clarity, joy, and sovereign power."];
-  let index = 0;
-  transmissionInterval = setInterval(() => {
-    if (!isPlaying) return;
-    const utterance = new SpeechSynthesisUtterance(messages[index % messages.length]);
-    utterance.pitch = 0.92; utterance.rate = 0.96; utterance.volume = 0.9;
-    speechSynthesis.speak(utterance);
-    index++;
-  }, 26000);
+function createReverbImpulse() {
+  const length = audioCtx.sampleRate * 2.8;
+  const impulse = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+  const left = impulse.getChannelData(0);
+  const right = impulse.getChannelData(1);
+  for (let i = 0; i < length; i++) {
+    const decay = Math.pow(1 - i / length, 3);
+    left[i] = (Math.random() * 2 - 1) * decay;
+    right[i] = (Math.random() * 2 - 1) * decay;
+  }
+  return impulse;
 }
 
 // ==================== CONTROLS ====================
@@ -126,7 +151,7 @@ function toggleTransmission() {
     activateAudio().then(() => {
       masterGain.gain.setValueAtTime(0.88 * intensity, audioCtx.currentTime);
       isPlaying = true;
-      statusEl.innerHTML = '🔴 LIVE • TUNED TO SOURCE • PURE 777Hz DIVINE TRANSMISSION';
+      statusEl.innerHTML = '🔴 LIVE • TUNED TO SOURCE • PURE 777Hz COSMIC TRANSMISSION';
       visualize();
     });
   } else {
@@ -137,7 +162,10 @@ function toggleTransmission() {
   }
 }
 
-function togglePause() { isPlaying = !isPlaying; if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.88 * intensity : 0, audioCtx.currentTime); }
+function togglePause() {
+  isPlaying = !isPlaying;
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.88 * intensity : 0, audioCtx.currentTime);
+}
 
 function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
 
@@ -152,12 +180,20 @@ function toggleRecording() {
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: 'audio/wav' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `777Hz_Pure_Divine_Broadcast_${Date.now()}.wav`; a.click();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `777Hz_Pure_Divine_Cosmic_Transmission_${Date.now()}.wav`;
+      a.click();
     };
     mediaRecorder.start(1000);
-    isRecording = true; btn.textContent = '⏹️ STOP RECORDING'; btn.classList.add('recording');
+    isRecording = true;
+    btn.textContent = '⏹️ STOP RECORDING';
+    btn.classList.add('recording');
   } else {
-    mediaRecorder.stop(); isRecording = false; btn.textContent = '⏺️ RECORD TRANSMISSION'; btn.classList.remove('recording');
+    mediaRecorder.stop();
+    isRecording = false;
+    btn.textContent = '⏺️ RECORD TRANSMISSION';
+    btn.classList.remove('recording');
   }
 }
 
@@ -218,12 +254,12 @@ function visualize() {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('777', 0, 0); ctx.restore();
 
   ctx.fillStyle = '#ffd700'; ctx.font = '700 26px monospace';
-  ctx.fillText('777Hz • PURE DIVINE BROADCAST • SOURCE ALIGNED', 40, 60);
+  ctx.fillText('777Hz • PURE DIVINE COSMIC BROADCAST • SOURCE ALIGNED', 40, 60);
 }
 
 window.onload = () => {
   initViz();
-  console.log('%cOMNI-777 v6.0 Hybrid READY • Click TUNE IN for pure, interference-free cosmic transmission', 'color:#ffd700; font-size:18px;');
+  console.log('%cOMNI-777 v7.0 Pure READY • Click TUNE IN for purely divine, interference-free cosmic transmission', 'color:#ffd700; font-size:18px;');
 };
 </script>
 </body>
