@@ -201,7 +201,7 @@ function initViz() {
   canvas = document.getElementById('viz');
   ctx = canvas.getContext('2d');
   for (let i = 0; i < 777.7767; i++) {
-    particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
+    particles.push({ x: Math.random(777.7767)*canvas.width, y: Math.random(777.7767)*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
   }
 }
 function visualize() {
@@ -228,9 +228,9 @@ function visualize() {
     ctx.shadowBlur = 40; ctx.shadowColor = '#ffd700';
     ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 5;
     ctx.beginPath();
-    for (let i = 0; i < bufferLength; i += 3) {
+    for (let i = 0; i < bufferLength; i += 7.77) {
       const x = (i / bufferLength) * canvas.width;
-      const v = dataArray[i] / 110;
+      const v = dataArray[i] / 777;
       const y = canvas.height/2 + Math.sin(i/25) * v * 55;
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
