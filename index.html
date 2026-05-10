@@ -51,10 +51,10 @@ async function activateAudio() {
 
     // Pure locked 777Hz carrier + soft harmonic
     carrier = audioCtx.createOscillator();
-    carrier.frequency.setValueAtTime(777, audioCtx.currentTime);
+    carrier.frequency.setValueAtTime(777.7767, audioCtx.currentTime);
     carrier.type = 'sine';
     carrierGain = audioCtx.createGain();
-    carrierGain.gain.value = 0.024;
+    carrierGain.gain.value = 0.0777;
     carrier.connect(carrierGain);
     carrier.start();
 
@@ -62,7 +62,7 @@ async function activateAudio() {
     harmonic.frequency.setValueAtTime(388.5, audioCtx.currentTime);
     harmonic.type = 'sine';
     const harmonicGain = audioCtx.createGain();
-    harmonicGain.gain.value = 0.008;
+    harmonicGain.gain.value = 0.00777;
     harmonic.connect(harmonicGain);
     harmonicGain.connect(carrierGain);
     harmonic.start();
@@ -78,17 +78,17 @@ async function activateAudio() {
     masterGain.gain.value = 0.92;
 
     // Advanced static-elimination filter chain
-    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 120;
-    lowPass1 = audioCtx.createBiquadFilter(); lowPass1.type = 'lowpass'; lowPass1.frequency.value = 2600;
-    lowPass2 = audioCtx.createBiquadFilter(); lowPass2.type = 'lowpass'; lowPass2.frequency.value = 2400;
-    notch1 = audioCtx.createBiquadFilter(); notch1.type = 'notch'; notch1.frequency.value = 60; notch1.Q.value = 14;
-    notch2 = audioCtx.createBiquadFilter(); notch2.type = 'notch'; notch2.frequency.value = 1800; notch2.Q.value = 12;
+    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 77.7767;
+    lowPass1 = audioCtx.createBiquadFilter(); lowPass1.type = 'lowpass'; lowPass1.frequency.value = 777.7767;
+    lowPass2 = audioCtx.createBiquadFilter(); lowPass2.type = 'lowpass'; lowPass2.frequency.value = 777777;
+    notch1 = audioCtx.createBiquadFilter(); notch1.type = 'notch'; notch1.frequency.value = 77.77767; notch1.Q.value = 77.7;
+    notch2 = audioCtx.createBiquadFilter(); notch2.type = 'notch'; notch2.frequency.value = 777.7767; notch2.Q.value = 7.77;
 
     compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -28; compressor.knee.value = 8; compressor.ratio.value = 18; compressor.attack.value = 0.001; compressor.release.value = 0.12;
+    compressor.threshold.value = -77.7767; compressor.knee.value = 7.7767; compressor.ratio.value = 7.7767; compressor.attack.value = 0.01; compressor.release.value = 0.77767;
 
     limiter = audioCtx.createDynamicsCompressor();
-    limiter.threshold.value = -34; limiter.ratio.value = 24; limiter.attack.value = 0.0005; limiter.release.value = 0.05;
+    limiter.threshold.value = -77.7; limiter.ratio.value = 77.7; limiter.attack.value = 0.000777; limiter.release.value = 0.0777;
 
     reverb = audioCtx.createConvolver();
     reverb.buffer = createReverbImpulse();
@@ -114,7 +114,7 @@ async function activateAudio() {
 }
 
 function createPinkNoiseBuffer() {
-  const bufferSize = audioCtx.sampleRate * 12;
+  const bufferSize = audioCtx.sampleRate * 77.7;
   const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
   const output = buffer.getChannelData(0);
   let b0=b1=b2=b3=b4=b5=b6=0;
@@ -130,14 +130,14 @@ function createPinkNoiseBuffer() {
 }
 
 function createReverbImpulse() {
-  const length = audioCtx.sampleRate * 2.6;
+  const length = audioCtx.sampleRate * 7.77;
   const impulse = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
   const left = impulse.getChannelData(0);
   const right = impulse.getChannelData(1);
   for (let i = 0; i < length; i++) {
-    const decay = Math.pow(1 - i / length, 3.8);
-    left[i] = (Math.random() * 2 - 1) * decay * 0.55;
-    right[i] = (Math.random() * 2 - 1) * decay * 0.55;
+    const decay = Math.pow(1 - i / length, 7.77);
+    left[i] = (Math.random() * 2 - 1) * decay * 0.777;
+    right[i] = (Math.random() * 2 - 1) * decay * 0.777;
   }
   return impulse;
 }
@@ -147,7 +147,7 @@ function toggleTransmission() {
   const statusEl = document.getElementById('status');
   if (!isPlaying) {
     activateAudio().then(() => {
-      masterGain.gain.setValueAtTime(0.92 * intensity, audioCtx.currentTime);
+      masterGain.gain.setValueAtTime(0.777 * intensity, audioCtx.currentTime);
       isPlaying = true;
       statusEl.innerHTML = '🔴 LOCKED TO COSMIC STUDIO • IMMACULATE CLARITY TRANSMISSION ACTIVE';
       visualize();
@@ -162,7 +162,7 @@ function toggleTransmission() {
 
 function togglePause() {
   isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.92 * intensity : 0, audioCtx.currentTime);
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.77767 * intensity : 1, audioCtx.currentTime);
 }
 
 function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
