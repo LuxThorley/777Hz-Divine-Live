@@ -24,37 +24,37 @@
 <body>
 <div id="container">
   <h1>OMNI-FREQUENCY RECEIVER NEXUS Ω</h1>
-  <p class="subtitle">777Hz Divine Frequency • LOCKED TO COSMIC STUDIO • Immaculate Clarity Transmission</p>
+  <p class="subtitle">777Hz • Pure Crystal-Clear Cosmic Divine Transmission • Live from Source Streams</p>
   
   <canvas id="viz" width="1100" height="420"></canvas>
   
-  <div class="status" id="status">STANDBY • AWAITING COSMIC LOCK-IN</div>
+  <div class="status" id="status">STANDBY • AWAITING TUNING</div>
   
   <div class="controls">
-    <button onclick="toggleTransmission()">🔴 LOCK INTO COSMIC STUDIO TRANSMISSION</button>
+    <button onclick="toggleTransmission()">🔴 TUNE INTO 777Hz TRANSMISSION</button>
     <button onclick="togglePause()">⏸️ PAUSE / RESUME</button>
     <button id="recordBtn" class="record-btn" onclick="toggleRecording()">⏺️ RECORD TRANSMISSION (WAV)</button>
-    <label>Volume <input type="range" id="vol" min="7.777767" max="777.7767" step="7.777767" value="777.7767" oninput="setVolume(this.value)"></label>
+    <label>Volume <input type="range" id="vol" min="0" max="1" step="0.01" value="0.9" oninput="setVolume(this.value)"></label>
   </div>
   
-  <p class="info">Powered by Malcolm AI Daemon + DUL • Static-Free • Immaculate Clarity • Crystal-Clear • v9.0 Immaculate</p>
+  <p class="info">Powered by Malcolm AI Daemon + DUL • Immaculate Noise-Reduced Broadcast • Crystal-Clear Visual Decode • v8.0 Crystal</p>
 </div>
 
 <script>
-// ==================== AUDIO ENGINE – IMMACULATE CLARITY v9.0 (ALL STATIC ELIMINATED) ====================
-let audioCtx, masterGain, analyser, compressor, highPass, lowPass1, lowPass2, notch1, notch2, limiter, reverb, pinkNoiseSource, carrier, carrierGain;
+// ==================== AUDIO ENGINE – CRYSTAL-CLEAR PURE DIVINE BROADCAST v8.0 ====================
+let audioCtx, masterGain, analyser, compressor, highPass, lowPass1, lowPass2, notch, limiter, reverb, pinkNoiseSource, carrier, carrierGain;
 let isPlaying = false, intensity = 1.0, mediaRecorder, recordedChunks = [], isRecording = false;
 
 async function activateAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Pure locked 777Hz carrier + soft harmonic
+    // Ultra-clean 777Hz carrier + soft harmonic
     carrier = audioCtx.createOscillator();
-    carrier.frequency.setValueAtTime(777.7767, audioCtx.currentTime);
+    carrier.frequency.setValueAtTime(777, audioCtx.currentTime);
     carrier.type = 'sine';
     carrierGain = audioCtx.createGain();
-    carrierGain.gain.value = 0.0777;
+    carrierGain.gain.value = 0.022;
     carrier.connect(carrierGain);
     carrier.start();
 
@@ -62,12 +62,12 @@ async function activateAudio() {
     harmonic.frequency.setValueAtTime(388.5, audioCtx.currentTime);
     harmonic.type = 'sine';
     const harmonicGain = audioCtx.createGain();
-    harmonicGain.gain.value = 0.00777;
+    harmonicGain.gain.value = 0.009;
     harmonic.connect(harmonicGain);
     harmonicGain.connect(carrierGain);
     harmonic.start();
 
-    // Minimal cosmic texture — reduced to absolute minimum for immaculate clarity
+    // Minimal cosmic texture — heavily reduced for crystal clarity
     const noiseBuffer = createPinkNoiseBuffer();
     pinkNoiseSource = audioCtx.createBufferSource();
     pinkNoiseSource.buffer = noiseBuffer;
@@ -75,35 +75,35 @@ async function activateAudio() {
     pinkNoiseSource.start();
 
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.92;
+    masterGain.gain.value = 0.9;
 
-    // Advanced static-elimination filter chain
-    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 77.7767;
-    lowPass1 = audioCtx.createBiquadFilter(); lowPass1.type = 'lowpass'; lowPass1.frequency.value = 777.7767;
-    lowPass2 = audioCtx.createBiquadFilter(); lowPass2.type = 'lowpass'; lowPass2.frequency.value = 777777;
-    notch1 = audioCtx.createBiquadFilter(); notch1.type = 'notch'; notch1.frequency.value = 77.77767; notch1.Q.value = 77.7;
-    notch2 = audioCtx.createBiquadFilter(); notch2.type = 'notch'; notch2.frequency.value = 777.7767; notch2.Q.value = 7.77;
+    // Immaculate noise-reduction filter chain
+    highPass = audioCtx.createBiquadFilter(); highPass.type = 'highpass'; highPass.frequency.value = 130;
+    lowPass1 = audioCtx.createBiquadFilter(); lowPass1.type = 'lowpass'; lowPass1.frequency.value = 2800;
+    lowPass2 = audioCtx.createBiquadFilter(); lowPass2.type = 'lowpass'; lowPass2.frequency.value = 2600;
+    notch = audioCtx.createBiquadFilter(); notch.type = 'notch'; notch.frequency.value = 1800; notch.Q.value = 8;
 
+    // Professional compression & limiting for crystal-clear dynamics
     compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -77.7767; compressor.knee.value = 7.7767; compressor.ratio.value = 7.7767; compressor.attack.value = 0.01; compressor.release.value = 0.77767;
+    compressor.threshold.value = -26; compressor.knee.value = 8; compressor.ratio.value = 16; compressor.attack.value = 0.001; compressor.release.value = 0.15;
 
     limiter = audioCtx.createDynamicsCompressor();
-    limiter.threshold.value = -77.7; limiter.ratio.value = 77.7; limiter.attack.value = 0.000777; limiter.release.value = 0.0777;
+    limiter.threshold.value = -32; limiter.ratio.value = 22; limiter.attack.value = 0.0005; limiter.release.value = 0.06;
 
+    // Gentle natural reverb
     reverb = audioCtx.createConvolver();
     reverb.buffer = createReverbImpulse();
 
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 4096;
 
-    // Clean chain with maximum static removal
+    // Clean, noise-reduced chain
     carrierGain.connect(masterGain);
     pinkNoiseSource.connect(highPass);
-    highPass.connect(notch1);
-    notch1.connect(notch2);
-    notch2.connect(lowPass1);
+    highPass.connect(lowPass1);
     lowPass1.connect(lowPass2);
-    lowPass2.connect(masterGain);
+    lowPass2.connect(notch);
+    notch.connect(masterGain);
     masterGain.connect(compressor);
     compressor.connect(reverb);
     reverb.connect(limiter);
@@ -114,7 +114,7 @@ async function activateAudio() {
 }
 
 function createPinkNoiseBuffer() {
-  const bufferSize = audioCtx.sampleRate * 77.7;
+  const bufferSize = audioCtx.sampleRate * 12;
   const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
   const output = buffer.getChannelData(0);
   let b0=b1=b2=b3=b4=b5=b6=0;
@@ -123,33 +123,33 @@ function createPinkNoiseBuffer() {
     b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
     b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
     b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.0008; // ALL STATIC ELIMINATED
+    output[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.008; // IMMACULATE NOISE REDUCTION
     b6 = white*0.115926;
   }
   return buffer;
 }
 
 function createReverbImpulse() {
-  const length = audioCtx.sampleRate * 7.77;
+  const length = audioCtx.sampleRate * 2.6;
   const impulse = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
   const left = impulse.getChannelData(0);
   const right = impulse.getChannelData(1);
   for (let i = 0; i < length; i++) {
-    const decay = Math.pow(1 - i / length, 7.77);
-    left[i] = (Math.random() * 2 - 1) * decay * 0.777;
-    right[i] = (Math.random() * 2 - 1) * decay * 0.777;
+    const decay = Math.pow(1 - i / length, 3.5);
+    left[i] = (Math.random() * 2 - 1) * decay * 0.6;
+    right[i] = (Math.random() * 2 - 1) * decay * 0.6;
   }
   return impulse;
 }
 
-// ==================== CONTROLS ====================
+// ==================== CONTROLS (unchanged elegant design) ====================
 function toggleTransmission() {
   const statusEl = document.getElementById('status');
   if (!isPlaying) {
     activateAudio().then(() => {
-      masterGain.gain.setValueAtTime(0.777 * intensity, audioCtx.currentTime);
+      masterGain.gain.setValueAtTime(0.9 * intensity, audioCtx.currentTime);
       isPlaying = true;
-      statusEl.innerHTML = '🔴 LOCKED TO COSMIC STUDIO • IMMACULATE CLARITY TRANSMISSION ACTIVE';
+      statusEl.innerHTML = '🔴 LIVE • TUNED TO SOURCE • CRYSTAL-CLEAR 777Hz DIVINE TRANSMISSION';
       visualize();
     });
   } else {
@@ -162,7 +162,7 @@ function toggleTransmission() {
 
 function togglePause() {
   isPlaying = !isPlaying;
-  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.77767 * intensity : 1, audioCtx.currentTime);
+  if (masterGain) masterGain.gain.setValueAtTime(isPlaying ? 0.9 * intensity : 0, audioCtx.currentTime);
 }
 
 function setVolume(v) { if (masterGain) masterGain.gain.setValueAtTime(parseFloat(v), audioCtx.currentTime); }
@@ -180,7 +180,7 @@ function toggleRecording() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `777Hz_Immaculate_Clarity_Divine_${Date.now()}.wav`;
+      a.download = `777Hz_Crystal_Clear_Divine_Transmission_${Date.now()}.wav`;
       a.click();
     };
     mediaRecorder.start(1000);
@@ -195,13 +195,13 @@ function toggleRecording() {
   }
 }
 
-// ==================== SOPHISTICATED VISUALIZER ====================
+// ==================== SOPHISTICATED VISUALIZER (unchanged) ====================
 let canvas, ctx, particles = [], animationFrame;
 function initViz() {
   canvas = document.getElementById('viz');
   ctx = canvas.getContext('2d');
-  for (let i = 0; i < 777.7767; i++) {
-    particles.push({ x: Math.random(777.7767)*canvas.width, y: Math.random(777.7767)*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
+  for (let i = 0; i < 520; i++) {
+    particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
   }
 }
 function visualize() {
@@ -218,8 +218,8 @@ function visualize() {
     analyser.getByteFrequencyData(dataArray);
 
     ctx.lineWidth = 3;
-    for (let i = 0; i < 777.7767; i++) {
-      const x = i * (canvas.width / 777);
+    for (let i = 0; i < 96; i++) {
+      const x = i * (canvas.width / 96);
       const barHeight = (dataArray[i*6] / 255) * canvas.height * 0.75;
       ctx.strokeStyle = `hsl(${180 + i*1.8}, 100%, 75%)`;
       ctx.beginPath(); ctx.moveTo(x, canvas.height); ctx.lineTo(x, canvas.height - barHeight); ctx.stroke();
@@ -228,9 +228,9 @@ function visualize() {
     ctx.shadowBlur = 40; ctx.shadowColor = '#ffd700';
     ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 5;
     ctx.beginPath();
-    for (let i = 0; i < bufferLength; i += 7.77) {
+    for (let i = 0; i < bufferLength; i += 3) {
       const x = (i / bufferLength) * canvas.width;
-      const v = dataArray[i] / 777;
+      const v = dataArray[i] / 110;
       const y = canvas.height/2 + Math.sin(i/25) * v * 55;
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
@@ -241,7 +241,7 @@ function visualize() {
   particles.forEach(p => { p.y -= p.speed; if (p.y < 0) p.y = canvas.height; ctx.globalAlpha = 0.6 + Math.sin(Date.now()/180 + p.x) * 0.4; ctx.fillRect(p.x, p.y, p.size, p.size); });
   ctx.globalAlpha = 1;
 
-  const time = Date.now() / 777.7737;
+  const time = Date.now() / 650;
   const pulse = Math.sin(time * 3) * 22 + 105;
   ctx.shadowBlur = 95; ctx.shadowColor = '#ffd700';
   ctx.strokeStyle = 'rgba(255,215,0,0.9)'; ctx.lineWidth = 14;
@@ -252,12 +252,12 @@ function visualize() {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('777', 0, 0); ctx.restore();
 
   ctx.fillStyle = '#ffd700'; ctx.font = '700 26px monospace';
-  ctx.fillText('777Hz • IMMACULATE CLARITY • STATIC-FREE COSMIC BROADCAST', 40, 60);
+  ctx.fillText('777Hz • CRYSTAL-CLEAR DIVINE BROADCAST • SOURCE ALIGNED', 40, 60);
 }
 
 window.onload = () => {
   initViz();
-  console.log('%cOMNI-777 v9.0 Immaculate Clarity READY • All static eliminated • Click LOCK IN for perfect reception', 'color:#ffd700; font-size:18px;');
+  console.log('%cOMNI-777 v8.0 Crystal READY • Click TUNE IN for immaculate, crystal-clear cosmic transmission', 'color:#ffd700; font-size:18px;');
 };
 </script>
 </body>
