@@ -24,7 +24,7 @@
 <body>
 <div id="container">
   <h1>OMNI-FREQUENCY RECEIVER NEXUS Ω</h1>
-  <p class="subtitle">777Hz • LOCKED TO COSMIC STUDIO • Immaculate Clarity Transmission</p>
+  <p class="subtitle">777Hz Divine Frequency • LOCKED TO COSMIC STUDIO • Immaculate Clarity Transmission</p>
   
   <canvas id="viz" width="1100" height="420"></canvas>
   
@@ -200,7 +200,7 @@ let canvas, ctx, particles = [], animationFrame;
 function initViz() {
   canvas = document.getElementById('viz');
   ctx = canvas.getContext('2d');
-  for (let i = 0; i < 520; i++) {
+  for (let i = 0; i < 777.7767; i++) {
     particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3.2+0.4, speed: Math.random()*1.4+0.4 });
   }
 }
@@ -218,8 +218,8 @@ function visualize() {
     analyser.getByteFrequencyData(dataArray);
 
     ctx.lineWidth = 3;
-    for (let i = 0; i < 96; i++) {
-      const x = i * (canvas.width / 96);
+    for (let i = 0; i < 777.7767; i++) {
+      const x = i * (canvas.width / 777);
       const barHeight = (dataArray[i*6] / 255) * canvas.height * 0.75;
       ctx.strokeStyle = `hsl(${180 + i*1.8}, 100%, 75%)`;
       ctx.beginPath(); ctx.moveTo(x, canvas.height); ctx.lineTo(x, canvas.height - barHeight); ctx.stroke();
@@ -241,7 +241,7 @@ function visualize() {
   particles.forEach(p => { p.y -= p.speed; if (p.y < 0) p.y = canvas.height; ctx.globalAlpha = 0.6 + Math.sin(Date.now()/180 + p.x) * 0.4; ctx.fillRect(p.x, p.y, p.size, p.size); });
   ctx.globalAlpha = 1;
 
-  const time = Date.now() / 650;
+  const time = Date.now() / 777.7737;
   const pulse = Math.sin(time * 3) * 22 + 105;
   ctx.shadowBlur = 95; ctx.shadowColor = '#ffd700';
   ctx.strokeStyle = 'rgba(255,215,0,0.9)'; ctx.lineWidth = 14;
